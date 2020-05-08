@@ -14,7 +14,7 @@ export default function CreateUser() {
   // Update el DOM
   useEffect(() => {
     getUsers();
-  });
+  }, []);
 
   // SAVE USER
   const hadleSubmit = async (e) => {

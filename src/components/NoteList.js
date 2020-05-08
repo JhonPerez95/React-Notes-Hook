@@ -9,6 +9,7 @@ export default function NoteList() {
 
   const getNotes = async () => {
     const res = await Axios.get("http://localhost:4000/api/notes");
+
     setNotes(res.data.noteDb);
   };
 
