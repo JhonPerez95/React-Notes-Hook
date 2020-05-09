@@ -5,6 +5,8 @@ import Axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+const API = process.env.REACT_APP_API;
+
 export default function CreateNote(props) {
   const [users, setUsers] = useState([]);
 
@@ -27,7 +29,7 @@ export default function CreateNote(props) {
 
   // GET INFO
   const getInfo = async () => {
-    const res = await Axios.get("http://localhost:4000/api/users");
+    const res = await Axios.get(`${API}/api/users`);
     setUsers(res.data.usersDb);
 
     setUserSelect(res.data.usersDb[0]._id);
@@ -39,7 +41,7 @@ export default function CreateNote(props) {
   const getNote = async () => {
     await getInfo();
     const idNote = props.match.params.id;
-    const res = await Axios.get(`http://localhost:4000/api/notes/${idNote}`);
+    const res = await Axios.get(`${API}/api/notes/${idNote}`);
 
     setTitle(res.data.noteDb.title);
     setDescription(res.data.noteDb.description);
@@ -61,9 +63,9 @@ export default function CreateNote(props) {
     };
 
     if (update) {
-      await Axios.put(`http://localhost:4000/api/notes/${idNote}`, newNote);
+      await Axios.put(`${API}/api/notes/${idNote}`, newNote);
     } else {
-      await Axios.post("http://localhost:4000/api/notes", newNote);
+      await Axios.post(`${API}/api/notes`, newNote);
     }
 
     window.location.href = "/";

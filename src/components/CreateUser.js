@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 
 import Axios from "axios";
 
+const API = process.env.REACT_APP_API;
+
 export default function CreateUser() {
   const [users, setUsers] = useState([]);
   const [username, setUsername] = useState("");
 
   const getUsers = async () => {
-    const res = await Axios.get("http://localhost:4000/api/users");
+    const res = await Axios.get(`${API}/api/users`);
     setUsers(res.data.usersDb);
   };
 
@@ -22,14 +24,14 @@ export default function CreateUser() {
     const data = {
       username,
     };
-    await Axios.post("http://localhost:4000/api/users", data);
+    await Axios.post(`${API}/api/users`, data);
     getUsers();
     setUsername(" ");
   };
 
   // DELETED USER
   const handlerDelete = (id) => {
-    Axios.delete(`http://localhost:4000/api/users/${id}`);
+    Axios.delete(`${API}/api/users/${id}`);
     getUsers();
   };
 
