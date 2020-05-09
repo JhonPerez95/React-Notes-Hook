@@ -4,7 +4,6 @@ import Axios from "axios";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Link } from "react-router-dom";
 
 export default function CreateNote(props) {
   const [users, setUsers] = useState([]);
@@ -19,7 +18,7 @@ export default function CreateNote(props) {
 
   // LOAD DOMgetNote
   useEffect(() => {
-    getInfo();
+    getNote();
   }, []);
 
   // useEffect(() => {
@@ -30,17 +29,15 @@ export default function CreateNote(props) {
   const getInfo = async () => {
     const res = await Axios.get("http://localhost:4000/api/users");
     setUsers(res.data.usersDb);
-    if (!props.match.params.id) {
-      setUserSelect(res.data.usersDb[0]._id);
-    } else {
-      getNote();
-    }
+
+    setUserSelect(res.data.usersDb[0]._id);
   };
 
   //
 
   // INFO NOTE
   const getNote = async () => {
+    await getInfo();
     const idNote = props.match.params.id;
     const res = await Axios.get(`http://localhost:4000/api/notes/${idNote}`);
 
@@ -68,6 +65,8 @@ export default function CreateNote(props) {
     } else {
       await Axios.post("http://localhost:4000/api/notes", newNote);
     }
+
+    window.location.href = "/";
   };
 
   return (
@@ -123,10 +122,8 @@ export default function CreateNote(props) {
                 }}
               />
             </div>
-            <Link className="btn btn-primary" to="/" type="submit">
-              save
-            </Link>
-            {/* <button className="btn btn-primary">Save</button> */}
+
+            <button className="btn btn-primary">save</button>
           </div>
         </form>
       </div>
