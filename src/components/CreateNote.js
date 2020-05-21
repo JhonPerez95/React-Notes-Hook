@@ -1,31 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import Axios from "axios";
+import Axios from 'axios';
 
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
+import { findNotes } from '../service/getAPI';
 const API = process.env.REACT_APP_API;
 
 export default function CreateNote(props) {
   const [users, setUsers] = useState([]);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date());
-  const [userSelect, setUserSelect] = useState("");
+  const [userSelect, setUserSelect] = useState('');
 
-  const [idNote, setNoteId] = useState("");
+  // const [note, setNote] = useState({
+  //   title: '',
+  //   description: '',
+  //   date: new Date(),
+  //   userSelect: '',
+  // });
+
+  const [idNote, setNoteId] = useState('');
   const [update, setUpdate] = useState(false);
+
+  //
+  const id = props.match.params.id;
 
   // LOAD DOMgetNote
   useEffect(() => {
-    getNote();
-  }, []);
+    const getNote = async () => {
+      await getInfo();
+      const { title, description, date, _id } = await findNotes(id);
 
-  // useEffect(() => {
-  //   getNote();
-  // }, [update]);
+      setTitle(title);
+      setDescription(description);
+      setDate(new Date(date));
+      setUserSelect(_id);
+
+      // setNote((note) => ({
+      //   ...note,
+      //   title,
+      //   description,
+      //   date,
+      //   userSelect: _id,
+      // }));
+
+      setUpdate(true);
+      setNoteId(id);
+    };
+    getNote();
+  }, [id]);
 
   // GET INFO
   const getInfo = async () => {
@@ -33,22 +60,6 @@ export default function CreateNote(props) {
     setUsers(res.data.usersDb);
 
     setUserSelect(res.data.usersDb[0]._id);
-  };
-
-  //
-
-  // INFO NOTE
-  const getNote = async () => {
-    await getInfo();
-    const idNote = props.match.params.id;
-    const res = await Axios.get(`${API}/api/notes/${idNote}`);
-
-    setTitle(res.data.noteDb.title);
-    setDescription(res.data.noteDb.description);
-    setDate(new Date(res.data.noteDb.date));
-    setUserSelect(res.data.noteDb.user._id);
-    setUpdate(true);
-    setNoteId(props.match.params.id);
   };
 
   // SAVE NOTES
@@ -68,7 +79,7 @@ export default function CreateNote(props) {
       await Axios.post(`${API}/api/notes`, newNote);
     }
 
-    window.location.href = "/";
+    window.location.href = '/';
   };
 
   return (
